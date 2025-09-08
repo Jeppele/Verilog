@@ -1,6 +1,6 @@
 `timescale 1ns/1ps   // Always set timescale for consistency
 
-module template_tb;
+module counter_tb;
 
     // =========================================================
     // Clock & Reset
@@ -22,21 +22,21 @@ module template_tb;
     // DUT I/O Signals
     // =========================================================
     // Declare test bench-controlled regs for inputs
-    reg  a_tb, b_tb;
+    reg  en_tb;
     // Declare wires to capture outputs
-    wire out_tb;
+    wire [3:0] out_tb;
+    wire done_tb;
 
     // =========================================================
     // DUT Instantiation
     // =========================================================
-    // Replace `template` with the name of your DUT and replace
-    // ports accordingly
-    template DUT (
-        .clk (clk_tb),
-        .rst (rst_tb),
-        .a   (a_tb),
-        .b   (b_tb),
-        .out (out_tb)
+    // Replace `template` with the name of your DUT
+    counter DUT (
+        .clk    (clk_tb),
+        .reset  (rst_tb),
+        .enable (en_tb),
+        .out    (out_tb),
+        .done   (done_tb)
     );
 
     // =========================================================
@@ -44,24 +44,25 @@ module template_tb;
     // =========================================================
     initial begin
         // Initialize inputs
-        a_tb = 0;
-        b_tb = 0;
+        en_tb = 0;
 
         // Monitor outputs (prints when any monitored var changes)
-        $monitor("Time=%0t | rst=%b | a=%b b=%b | out=%b", 
-                 $time, rst_tb, a_tb, b_tb, out_tb);
+        $monitor("Time=%0t | rst=%b | en=%b | out=%b | done=%b", 
+                 $time, rst_tb, en_tb, out_tb, done_tb);
 
         // Wait until reset finishes
         @(negedge rst_tb);
 
         // Test case 1
-        #10 a_tb = 1; b_tb = 0;
+        #10 
+        en_tb = 1; #50 // Let enable be high for 50 time units (25 clock cycles)
+        en_tb = 0;
 
         // Test case 2
-        #10 a_tb = 0; b_tb = 1;
+        #10;
 
         // Test case 3
-        #10 a_tb = 1; b_tb = 1;
+        #10;
 
         // Wrap up simulation
         #20 $finish;
@@ -71,8 +72,8 @@ module template_tb;
     // Waveform Dump (for GTKWave, ModelSim, etc.)
     // =========================================================
     initial begin
-        $dumpfile("template_tb.vcd");   // name of VCD dump file
-        $dumpvars(0, template_tb);      // dump all signals in tb
+        $dumpfile("counter_tb.vcd");   // name of VCD dump file
+        $dumpvars(0, counter_tb);      // dump all signals in tb
     end
 
 endmodule
