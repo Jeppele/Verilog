@@ -1,0 +1,4 @@
+modules/half_adder.v
+modules/full_adder.v
+modules/carry_ripple_adder.v
+testbenches/carry_ripple_adder_tb.v

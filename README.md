@@ -1,1 +1,0 @@
-Here is a repo containing some common building blocks used in digital designs, written in Verilog.
