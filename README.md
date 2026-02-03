@@ -56,8 +56,8 @@ brew install xdot
 To launch YoSys, type `yosys` in the command line and click enter. The fastest way to synthesize a circuit is with
 
 ```
-read -sv <filename>`
-synth -top <module name>`
+read -sv <filename>
+synth -top <module name>
 ```
 
 A more full synthesis is:
